@@ -1,0 +1,31 @@
+image: hashicorp/terraform:0.11.13
+
+pipelines:
+  default:
+    - step:
+        name: Initialize
+        script:
+          - export TF_VAR_env=$BITBUCKET_REPO_SLUG
+          - terraform init
+        artifacts:
+          - .terraform/**
+    - step:
+        name: Import
+        script:
+          - export TF_VAR_env=$BITBUCKET_REPO_SLUG
+          - terraform import module.this.aws_s3_bucket.backend ${TF_VAR_env}-backend || true
+          - terraform import module.this.aws_s3_bucket.logs ${TF_VAR_env}-logs || true
+        artifacts:
+          - terraform.tfstate
+    - step:
+        name: Plan
+        script:
+          - export TF_VAR_env=$BITBUCKET_REPO_SLUG
+          - terraform plan -input=false -out .tfplan
+        artifacts:
+          - .tfplan
+    - step:
+        name: Apply
+        trigger: manual
+        script:
+          - terraform apply -input=false -auto-approve .tfplan

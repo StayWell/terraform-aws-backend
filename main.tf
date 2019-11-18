@@ -23,7 +23,7 @@ resource "aws_s3_bucket" "backend" {
 
 resource "aws_s3_bucket" "logs" {
   bucket = "${var.identifier}-logs"
-  acl    = "private"
+  acl    = "log-delivery-write"
   tags   = "${var.tags}"
 
   server_side_encryption_configuration {
