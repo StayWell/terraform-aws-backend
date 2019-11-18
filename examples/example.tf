@@ -1,6 +1,6 @@
 module "this" {
   source     = "StayWell/backend/aws"
-  version    = "0.2.0"
+  version    = "0.3.0"
   identifier = "${var.env}"
 }
 

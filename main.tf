@@ -19,6 +19,11 @@ resource "aws_s3_bucket" "backend" {
     target_bucket = "${aws_s3_bucket.logs.id}"
     target_prefix = "${var.identifier}-backend"
   }
+
+  # required to support idempotent execution without a pre-existing backend
+  lifecycle {
+    ignore_changes = ["acl", "force_destroy"]
+  }
 }
 
 resource "aws_s3_bucket" "logs" {
@@ -32,5 +37,10 @@ resource "aws_s3_bucket" "logs" {
         sse_algorithm = "AES256"
       }
     }
+  }
+
+  # required to support idempotent execution without a pre-existing backend
+  lifecycle {
+    ignore_changes = ["acl", "force_destroy"]
   }
 }
